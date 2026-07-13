@@ -959,7 +959,7 @@ function e(e,t,i,n){var o,a=arguments.length,r=a<3?t:null===n?n=Object.getOwnPro
       margin-top: auto;
     }
   </style>
-`;console.info(`%c  BAR-CARD \n%c  ${Ie("common.version")} 3.3.0    `,"color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");let Re=class extends he{constructor(){super(...arguments),this._configArray=[],this._stateArray=[],this._animationState=[],this._rowAmount=1}static async getConfigElement(){return document.createElement("bar-card-editor")}static getStubConfig(){return{}}shouldUpdate(e){return Ae(this,e,!1)}setConfig(e){if(!e)throw new Error(Ie("common.invalid_configuration"));this._config=Se({animation:{state:"off",speed:5},color:"var(--bar-card-color, var(--primary-color))",columns:1,direction:"right",max:100,min:0,positions:{icon:"outside",indicator:"outside",name:"inside",minmax:"off",value:"inside"}},e),"horizontal"==this._config.stack&&(this._config.columns=this._config.entities.length),this._configArray=function(e){const t=[];if(e.entities){for(const i of e.entities)if("string"==typeof i){const n=Se({},e);delete n.entities;const o=Se(n,{entity:i});t.push(o)}else if("object"==typeof i){const n=Se({},e);delete n.entities;const o=Se(n,i);t.push(o)}}else t.push(e);return t}(this._config),this._rowAmount=this._configArray.length/this._config.columns}render(){return this._config&&this.hass?V`
+`;console.info(`%c  BAR-CARD \n%c  ${Ie("common.version")} 3.3.1    `,"color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");let Re=class extends he{constructor(){super(...arguments),this._configArray=[],this._stateArray=[],this._animationState=[],this._rowAmount=1}static async getConfigElement(){return document.createElement("bar-card-editor")}static getStubConfig(){return{}}shouldUpdate(e){return Ae(this,e,!1)}setConfig(e){if(!e)throw new Error(Ie("common.invalid_configuration"));this._config=Se({animation:{state:"off",speed:5},color:"var(--bar-card-color, var(--primary-color))",columns:1,direction:"right",max:100,min:0,positions:{icon:"outside",indicator:"outside",name:"inside",minmax:"off",value:"inside"}},e),"horizontal"==this._config.stack&&(this._config.columns=this._config.entities.length),this._configArray=function(e){const t=[];if(e.entities){for(const i of e.entities)if("string"==typeof i){const n=Se({},e);delete n.entities;const o=Se(n,{entity:i});t.push(o)}else if("object"==typeof i){const n=Se({},e);delete n.entities;const o=Se(n,i);t.push(o)}}else t.push(e);return t}(this._config),this._rowAmount=this._configArray.length/this._config.columns}render(){return this._config&&this.hass?V`
       <ha-card
         .header=${this._config.title?this._config.title:null}
         style="${this._config.entity_row?"background: #0000; box-shadow: none;":""}"
@@ -973,90 +973,90 @@ function e(e,t,i,n){var o,a=arguments.length,r=a<3?t:null===n?n=Object.getOwnPro
         </div>
       </ha-card>
       ${Me}
-    `:V``}_createBarArray(){const e=[];for(let t=0;t<this._configArray.length;t++)(e.length+1)*this._config.columns==t&&e.push(this._config.columns),this._configArray.length==t+1&&e.push(this._configArray.length-e.length*this._config.columns);const t=[];for(let i=0;i<e.length;i++){const n=[];for(let t=0;t<e[i];t++){const e=i*this._config.columns+t,o=this._configArray[e],a=this.hass.states[o.entity];if(!a){n.push(V`
+    `:V``}_createBarArray(){var e,t;const i=[];for(let e=0;e<this._configArray.length;e++)(i.length+1)*this._config.columns==e&&i.push(this._config.columns),this._configArray.length==e+1&&i.push(this._configArray.length-i.length*this._config.columns);const n=[];for(let o=0;o<i.length;o++){const a=[];for(let n=0;n<i[o];n++){const i=o*this._config.columns+n,r=this._configArray[i],s=this.hass.states[r.entity];if(!s){a.push(V`
             <div class="warning" style="margin-bottom: 8px;">
-              ${Ie("common.entity_not_available")}: ${o.entity}
+              ${Ie("common.entity_not_available")}: ${r.entity}
             </div>
-          `);continue}let r;if(r=o.attribute?a.attributes[o.attribute]:a.state,o.severity&&this._computeSeverityVisibility(r,e))continue;o.limit_value&&(r=Math.min(r,o.max),r=Math.max(r,o.min)),isNaN(Number(r))||(0==o.decimal?r=Number(r).toFixed(0):o.decimal&&(r=Number(r).toFixed(o.decimal)));let s=40;o.height&&(s=o.height);let c,l,d,h="stretch",p="0px 0px 0px 13px",u="right",m="row",g="left",f="height: 100%; width: 2px;";switch(o.direction){case"right":u="right",g="left";break;case"up":p="0px",u="top",m="column-reverse",g="bottom",f="height: 2px; width: 100%;"}switch(d=this._computeSeverityIcon(r,e)?this._computeSeverityIcon(r,e):o.icon?o.icon:a.attributes.icon?a.attributes.icon:_e(ge(o.entity),r),o.positions.icon){case"outside":c=V`
+          `);continue}let c;if(c=r.attribute?s.attributes[r.attribute]:s.state,r.severity&&this._computeSeverityVisibility(c,i))continue;if(r.limit_value&&(c=Math.min(c,r.max),c=Math.max(c,r.min)),!isNaN(Number(c)))if(0==r.decimal)c=Number(c).toFixed(0);else if(r.decimal)c=Number(c).toFixed(r.decimal);else if(!r.attribute){const i=null===(t=null===(e=this.hass.entities)||void 0===e?void 0:e[r.entity])||void 0===t?void 0:t.display_precision;null!=i&&(c=Number(c).toFixed(i))}let l=40;r.height&&(l=r.height);let d,h,p,u="stretch",m="0px 0px 0px 13px",g="right",f="row",v="left",b="height: 100%; width: 2px;";switch(r.direction){case"right":g="right",v="left";break;case"up":m="0px",g="top",f="column-reverse",v="bottom",b="height: 2px; width: 100%;"}switch(p=this._computeSeverityIcon(c,i)?this._computeSeverityIcon(c,i):r.icon?r.icon:s.attributes.icon?s.attributes.icon:_e(ge(r.entity),c),r.positions.icon){case"outside":d=V`
               <bar-card-iconbar>
-                <ha-icon icon="${d}"></ha-icon>
+                <ha-icon icon="${p}"></ha-icon>
               </bar-card-iconbar>
-            `;break;case"inside":l=V`
+            `;break;case"inside":h=V`
               <bar-card-iconbar>
-                <ha-icon icon="${d}"></ha-icon>
+                <ha-icon icon="${p}"></ha-icon>
               </bar-card-iconbar>
-            `,p="0px";break;case"off":p="0px"}const v=o.name?o.name:a.attributes.friendly_name;let b,_,y,$,w,x,S;switch(o.positions.name){case"outside":b=V`
+            `,m="0px";break;case"off":m="0px"}const _=r.name?r.name:s.attributes.friendly_name;let y,$,w,x,S,A,k;switch(r.positions.name){case"outside":y=V`
               <bar-card-name
-                class="${o.entity_row?"name-outside":""}"
-                style="${"up"==o.direction?"":o.width?`width: calc(100% - ${o.width});`:""}"
-                >${v}</bar-card-name
+                class="${r.entity_row?"name-outside":""}"
+                style="${"up"==r.direction?"":r.width?`width: calc(100% - ${r.width});`:""}"
+                >${_}</bar-card-name
               >
-            `,p="0px";break;case"inside":_=V`
-              <bar-card-name>${v}</bar-card-name>
-            `}switch(y=isNaN(Number(r))?"":o.unit_of_measurement?o.unit_of_measurement:a.attributes.unit_of_measurement,o.positions.minmax){case"outside":$=V`
-              <bar-card-min>${o.min}${y}</bar-card-min>
+            `,m="0px";break;case"inside":$=V`
+              <bar-card-name>${_}</bar-card-name>
+            `}switch(w=isNaN(Number(c))?"":r.unit_of_measurement?r.unit_of_measurement:s.attributes.unit_of_measurement,r.positions.minmax){case"outside":x=V`
+              <bar-card-min>${r.min}${w}</bar-card-min>
               <bar-card-divider>/</bar-card-divider>
-              <bar-card-max>${o.max}${y}</bar-card-max>
-            `;break;case"inside":w=V`
-              <bar-card-min class="${"up"==o.direction?"min-direction-up":"min-direction-right"}"
-                >${o.min}${y}</bar-card-min
-              >
-              <bar-card-divider>/</bar-card-divider>
-              <bar-card-max> ${o.max}${y}</bar-card-max>
-            `}switch(o.positions.value){case"outside":x=V`
-              <bar-card-value class="${"up"==o.direction?"value-direction-up":"value-direction-right"}"
-                >${o.complementary?o.max-r:r} ${y}</bar-card-value
-              >
+              <bar-card-max>${r.max}${w}</bar-card-max>
             `;break;case"inside":S=V`
+              <bar-card-min class="${"up"==r.direction?"min-direction-up":"min-direction-right"}"
+                >${r.min}${w}</bar-card-min
+              >
+              <bar-card-divider>/</bar-card-divider>
+              <bar-card-max> ${r.max}${w}</bar-card-max>
+            `}switch(r.positions.value){case"outside":A=V`
+              <bar-card-value class="${"up"==r.direction?"value-direction-up":"value-direction-right"}"
+                >${r.complementary?r.max-c:c} ${w}</bar-card-value
+              >
+            `;break;case"inside":k=V`
               <bar-card-value
-                class="${"inside"==o.positions.minmax?"":"up"==o.direction?"value-direction-up":"value-direction-right"}"
-                >${o.complementary?o.max-r:r} ${y}</bar-card-value
+                class="${"inside"==r.positions.minmax?"":"up"==r.direction?"value-direction-up":"value-direction-right"}"
+                >${r.complementary?r.max-c:c} ${w}</bar-card-value
               >
-            `;break;case"off":p="0px"}let A="";r>this._stateArray[e]?(A="▲","up"==o.direction?this._animationState[e]="animation-increase-vertical":this._animationState[e]="animation-increase"):r<this._stateArray[e]?(A="▼","up"==o.direction?this._animationState[e]="animation-decrease-vertical":this._animationState[e]="animation-decrease"):this._animationState[e]=this._animationState[e],isNaN(Number(r))&&(A="");const k=this._computeBarColor(r,e);let C,E;switch(o.positions.indicator){case"outside":C=V`
+            `;break;case"off":m="0px"}let C="";c>this._stateArray[i]?(C="▲","up"==r.direction?this._animationState[i]="animation-increase-vertical":this._animationState[i]="animation-increase"):c<this._stateArray[i]?(C="▼","up"==r.direction?this._animationState[i]="animation-decrease-vertical":this._animationState[i]="animation-decrease"):this._animationState[i]=this._animationState[i],isNaN(Number(c))&&(C="");const E=this._computeBarColor(c,i);let N,O;switch(r.positions.indicator){case"outside":N=V`
               <bar-card-indicator
-                class="${"up"==o.direction?"":"indicator-direction-right"}"
-                style="--bar-color: ${k};"
-                >${A}</bar-card-indicator
+                class="${"up"==r.direction?"":"indicator-direction-right"}"
+                style="--bar-color: ${E};"
+                >${C}</bar-card-indicator
               >
-            `;break;case"inside":E=V`
-              <bar-card-indicator style="--bar-color: ${k};">${A}</bar-card-indicator>
-            `}const N=this._computePercent(r,e),O=this._computePercent(o.target,e);let P=N,T=this._computePercent(o.target,e);T<P&&(P=T,T=N);let j="";o.width&&(h="center",j=`width: ${o.width}`);const z=this._animationState[e];let I="right",M=100*N,R="animationbar-horizontal";"animation-increase-vertical"!=z&&"animation-decrease-vertical"!=z||(I="bottom",R="animationbar-vertical",M=100*(100-N)),n.push(V`
+            `;break;case"inside":O=V`
+              <bar-card-indicator style="--bar-color: ${E};">${C}</bar-card-indicator>
+            `}const P=this._computePercent(c,i),T=this._computePercent(r.target,i);let j=P,z=this._computePercent(r.target,i);z<j&&(j=z,z=P);let I="";r.width&&(u="center",I=`width: ${r.width}`);const M=this._animationState[i];let R="right",U=100*P,B="animationbar-horizontal";"animation-increase-vertical"!=M&&"animation-decrease-vertical"!=M||(R="bottom",B="animationbar-vertical",U=100*(100-P)),a.push(V`
           <bar-card-card
-            style="flex-direction: ${m}; align-items: ${h};"
+            style="flex-direction: ${f}; align-items: ${u};"
             @action=${this._handleAction}
-            .config=${o}
-            .actionHandler=${Oe({hasHold:xe(o.hold_action),hasDoubleClick:xe(o.double_tap_action)})}
+            .config=${r}
+            .actionHandler=${Oe({hasHold:xe(r.hold_action),hasDoubleClick:xe(r.double_tap_action)})}
           >
-            ${c} ${C} ${b}
+            ${d} ${N} ${y}
             <bar-card-background
-              style="margin: ${p}; height: ${s}${"number"==typeof s?"px":""}; ${j}"
+              style="margin: ${m}; height: ${l}${"number"==typeof l?"px":""}; ${I}"
             >
-              <bar-card-backgroundbar style="--bar-color: ${k};"></bar-card-backgroundbar>
-              ${"on"==o.animation.state?V`
+              <bar-card-backgroundbar style="--bar-color: ${E};"></bar-card-backgroundbar>
+              ${"on"==r.animation.state?V`
                     <bar-card-animationbar
-                      style="animation: ${z} ${o.animation.speed}s infinite ease-out; --bar-percent: ${M}%; --bar-color: ${k}; --animation-direction: ${I};"
-                      class="${R}"
+                      style="animation: ${M} ${r.animation.speed}s infinite ease-out; --bar-percent: ${U}%; --bar-color: ${E}; --animation-direction: ${R};"
+                      class="${B}"
                     ></bar-card-animationbar>
                   `:""}
               <bar-card-currentbar
-                style="--bar-color: ${k}; --bar-percent: ${N}%; --bar-direction: ${u}"
+                style="--bar-color: ${E}; --bar-percent: ${P}%; --bar-direction: ${g}"
               ></bar-card-currentbar>
-              ${o.target?V`
+              ${r.target?V`
                     <bar-card-targetbar
-                      style="--bar-color: ${k}; --bar-percent: ${P}%; --bar-target-percent: ${T}%; --bar-direction: ${u};"
+                      style="--bar-color: ${E}; --bar-percent: ${j}%; --bar-target-percent: ${z}%; --bar-direction: ${g};"
                     ></bar-card-targetbar>
                     <bar-card-markerbar
-                      style="--bar-color: ${k}; --bar-target-percent: ${O}%; ${g}: calc(${O}% - 1px); ${f}}"
+                      style="--bar-color: ${E}; --bar-target-percent: ${T}%; ${v}: calc(${T}% - 1px); ${b}}"
                     ></bar-card-markerbar>
                   `:""}
               <bar-card-contentbar
-                class="${"up"==o.direction?"contentbar-direction-up":"contentbar-direction-right"}"
+                class="${"up"==r.direction?"contentbar-direction-up":"contentbar-direction-right"}"
               >
-                ${l} ${E} ${_} ${w} ${S}
+                ${h} ${O} ${$} ${S} ${k}
               </bar-card-contentbar>
             </bar-card-background>
-            ${$} ${x}
+            ${x} ${A}
           </bar-card-card>
-        `),r!==this._stateArray[e]&&(this._stateArray[e]=r)}t.push(n)}let i="column";(this._config.columns||this._config.stack)&&(i="row");const n=[];for(const e of t)n.push(V`
-        <bar-card-row style="flex-direction: ${i};">${e}</bar-card-row>
-      `);return n}_computeBarColor(e,t){const i=this._configArray[t];let n;return n=i.severity?this._computeSeverityColor(e,t):"unavailable"==e?`var(--bar-card-disabled-color, ${i.color})`:i.color}_computeSeverityColor(e,t){const i=this._configArray[t],n=Number(e),o=i.severity;let a;return isNaN(n)?o.forEach(t=>{e==t.text&&(a=t.color)}):o.forEach(e=>{n>=e.from&&n<=e.to&&(a=e.color)}),null==a&&(a=i.color),a}_computeSeverityVisibility(e,t){const i=this._configArray[t],n=Number(e),o=i.severity;let a=!1;return isNaN(n)?o.forEach(t=>{e==t.text&&(a=t.hide)}):o.forEach(e=>{n>=e.from&&n<=e.to&&(a=e.hide)}),a}_computeSeverityIcon(e,t){const i=this._configArray[t],n=Number(e),o=i.severity;let a=!1;return!!o&&(isNaN(n)?o.forEach(t=>{e==t.text&&(a=t.icon)}):o.forEach(e=>{n>=e.from&&n<=e.to&&(a=e.icon)}),a)}_computePercent(e,t){const i=this._configArray[t],n=Number(e),o=Number(i.min),a=Number(i.max);if("unavailable"==e)return 0;if(isNaN(n))return 100;if(isNaN(o)||isNaN(a)||a-o<=0)return 0;let r;switch(i.direction){case"right-reverse":case"left-reverse":case"up-reverse":case"down-reverse":r=100-100*(n-o)/(a-o);break;default:r=100*(n-o)/(a-o)}return Math.max(0,Math.min(100,r))}_handleAction(e){this.hass&&e.target.config&&e.detail.action&&function(e,t,i,n){var o;"double_tap"===n&&i.double_tap_action?o=i.double_tap_action:"hold"===n&&i.hold_action?o=i.hold_action:"tap"===n&&i.tap_action&&(o=i.tap_action),we(e,t,i,o)}(this,this.hass,this._normalizeActionConfig(e.target.config),e.detail.action)}_normalizeActionConfig(e){const t=Object.assign({},e);for(const i of["tap_action","hold_action","double_tap_action"]){const n=e[i];n&&"perform-action"===n.action&&(t[i]=Object.assign(Object.assign({},n),{action:"call-service",service:n.perform_action,data:n.data||n.service_data}))}return t}getCardSize(){if(this._config.height){const e=this._config.height.toString();return Math.trunc(Number(e.replace("px",""))/50*this._rowAmount)+1}return this._rowAmount+1}};e([ae()],Re.prototype,"hass",void 0),e([ae()],Re.prototype,"_config",void 0),e([ae()],Re.prototype,"_configArray",void 0),Re=e([ie("bar-card")],Re);export{Re as BarCard};
+        `),c!==this._stateArray[i]&&(this._stateArray[i]=c)}n.push(a)}let o="column";(this._config.columns||this._config.stack)&&(o="row");const a=[];for(const e of n)a.push(V`
+        <bar-card-row style="flex-direction: ${o};">${e}</bar-card-row>
+      `);return a}_computeBarColor(e,t){const i=this._configArray[t];let n;return n=i.severity?this._computeSeverityColor(e,t):"unavailable"==e?`var(--bar-card-disabled-color, ${i.color})`:i.color}_computeSeverityColor(e,t){const i=this._configArray[t],n=Number(e),o=i.severity;let a;return isNaN(n)?o.forEach(t=>{e==t.text&&(a=t.color)}):o.forEach(e=>{n>=e.from&&n<=e.to&&(a=e.color)}),null==a&&(a=i.color),a}_computeSeverityVisibility(e,t){const i=this._configArray[t],n=Number(e),o=i.severity;let a=!1;return isNaN(n)?o.forEach(t=>{e==t.text&&(a=t.hide)}):o.forEach(e=>{n>=e.from&&n<=e.to&&(a=e.hide)}),a}_computeSeverityIcon(e,t){const i=this._configArray[t],n=Number(e),o=i.severity;let a=!1;return!!o&&(isNaN(n)?o.forEach(t=>{e==t.text&&(a=t.icon)}):o.forEach(e=>{n>=e.from&&n<=e.to&&(a=e.icon)}),a)}_computePercent(e,t){const i=this._configArray[t],n=Number(e),o=Number(i.min),a=Number(i.max);if("unavailable"==e)return 0;if(isNaN(n))return 100;if(isNaN(o)||isNaN(a)||a-o<=0)return 0;let r;switch(i.direction){case"right-reverse":case"left-reverse":case"up-reverse":case"down-reverse":r=100-100*(n-o)/(a-o);break;default:r=100*(n-o)/(a-o)}return Math.max(0,Math.min(100,r))}_handleAction(e){this.hass&&e.target.config&&e.detail.action&&function(e,t,i,n){var o;"double_tap"===n&&i.double_tap_action?o=i.double_tap_action:"hold"===n&&i.hold_action?o=i.hold_action:"tap"===n&&i.tap_action&&(o=i.tap_action),we(e,t,i,o)}(this,this.hass,this._normalizeActionConfig(e.target.config),e.detail.action)}_normalizeActionConfig(e){const t=Object.assign({},e);for(const i of["tap_action","hold_action","double_tap_action"]){const n=e[i];n&&"perform-action"===n.action&&(t[i]=Object.assign(Object.assign({},n),{action:"call-service",service:n.perform_action,data:n.data||n.service_data}))}return t}getCardSize(){if(this._config.height){const e=this._config.height.toString();return Math.trunc(Number(e.replace("px",""))/50*this._rowAmount)+1}return this._rowAmount+1}};e([ae()],Re.prototype,"hass",void 0),e([ae()],Re.prototype,"_config",void 0),e([ae()],Re.prototype,"_configArray",void 0),Re=e([ie("bar-card")],Re);export{Re as BarCard};

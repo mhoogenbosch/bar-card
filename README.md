@@ -1,19 +1,56 @@
-
 # bar-card (maintained fork)
 
-> **Fork-notitie (juli 2026):** dit is een onderhouden fork van het niet meer onderhouden
-> [custom-cards/bar-card](https://github.com/custom-cards/bar-card).
->
-> Wijzigingen in **v3.3.0**:
-> - Fix: een niet-numerieke `min`/`max` (bijv. een template dat `NaN` oplevert of een tekst-sensor) brak de
->   balkvulling van de hele card (`--bar-percent: NaN%` maakt de CSS-gradient ongeldig). Percentages worden
->   nu gevalideerd en geklemd op 0–100%.
-> - Fix: `tap_action`/`hold_action`/`double_tap_action` ondersteunen nu de HA 2024.8+ `perform-action`-syntax (#189).
-> - Fix: icoonkleur-fallback voor HA 2025.5+ (`--paper-item-icon-color` bestaat niet meer) (#195); nieuw
->   overschrijfbaar via `--bar-card-icon-color`.
-> - Nieuw: achtergrondbalk-kleur overschrijfbaar via `--bar-card-background-color` (#197).
-> - Fix: versiestring in de console klopt weer (stond sinds 3.2.0 nog op 3.1.7).
+Maintained fork of [custom-cards/bar-card](https://github.com/custom-cards/bar-card), which is no longer
+maintained. All credit for the original card goes to its creator
+[Lucas Bramlage](https://github.com/Gluwc) and the [custom-cards](https://github.com/custom-cards)
+community — this fork only keeps the card working on current Home Assistant releases.
 
+Onderhouden fork van [custom-cards/bar-card](https://github.com/custom-cards/bar-card), dat niet meer wordt
+onderhouden. Alle eer voor de oorspronkelijke card gaat naar de maker
+[Lucas Bramlage](https://github.com/Gluwc) en de [custom-cards](https://github.com/custom-cards)-community —
+deze fork houdt de card alleen werkend op actuele Home Assistant-releases.
+
+---
+
+## Release notes
+
+### v3.3.1 (2026-07-13)
+
+**English**
+- Fix: when no `decimal` option is set, the displayed value now honors the entity's *display precision*
+  from the Home Assistant entity registry (matching what HA itself shows) instead of the raw
+  full-precision state (upstream #198).
+
+**Nederlands**
+- Fix: zonder `decimal`-optie volgt de getoonde waarde nu de *weergaveprecisie* van de entiteit uit het
+  Home Assistant-entiteitenregister (zoals HA zelf toont) in plaats van de ruwe state met volledige
+  precisie (upstream #198).
+
+### v3.3.0 (2026-07-13)
+
+**English**
+- Fix: a non-numeric `min`/`max` (e.g. a template evaluating to `NaN`, or a text sensor) broke the bar fill
+  of the entire card (`--bar-percent: NaN%` invalidates the CSS gradient). Percentages are now validated
+  and clamped to 0–100%.
+- Fix: `tap_action`/`hold_action`/`double_tap_action` now support the HA 2024.8+ `perform-action` syntax
+  (upstream #189).
+- Fix: icon color fallback for HA 2025.5+ (`--paper-item-icon-color` no longer exists) (upstream #195);
+  overridable via `--bar-card-icon-color`.
+- New: background bar color overridable via `--bar-card-background-color` (upstream #197).
+- Fix: console version string was still reporting 3.1.7 since the 3.2.0 release.
+
+**Nederlands**
+- Fix: een niet-numerieke `min`/`max` (bijv. een template dat `NaN` oplevert of een tekst-sensor) brak de
+  balkvulling van de hele card (`--bar-percent: NaN%` maakt de CSS-gradient ongeldig). Percentages worden
+  nu gevalideerd en geklemd op 0–100%.
+- Fix: `tap_action`/`hold_action`/`double_tap_action` ondersteunen nu de HA 2024.8+ `perform-action`-syntax
+  (upstream #189).
+- Fix: icoonkleur-fallback voor HA 2025.5+ (`--paper-item-icon-color` bestaat niet meer) (upstream #195);
+  overschrijfbaar via `--bar-card-icon-color`.
+- Nieuw: achtergrondbalk-kleur overschrijfbaar via `--bar-card-background-color` (upstream #197).
+- Fix: versiestring in de console klopt weer (stond sinds 3.2.0 nog op 3.1.7).
+
+---
 
 ## [Examples](#examples-1)
 

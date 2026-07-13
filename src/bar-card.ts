@@ -157,6 +157,14 @@ export class BarCard extends LitElement {
         if (!isNaN(Number(entityState))) {
           if (config.decimal == 0) entityState = Number(entityState).toFixed(0);
           else if (config.decimal) entityState = Number(entityState).toFixed(config.decimal);
+          else if (!config.attribute) {
+            // No decimal configured: honor the entity's display precision from the
+            // registry (what HA itself shows) instead of the raw full-precision state.
+            const precision = (this.hass as any).entities?.[config.entity]?.display_precision;
+            if (precision !== undefined && precision !== null) {
+              entityState = Number(entityState).toFixed(precision);
+            }
+          }
         }
 
         // Defined height and check for configured height.
