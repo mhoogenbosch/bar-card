@@ -53,7 +53,7 @@ export const styles = html`
       position: relative;
     }
     bar-card-iconbar {
-      color: var(--icon-color, var(--paper-item-icon-color));
+      color: var(--bar-card-icon-color, var(--icon-color, var(--paper-item-icon-color, var(--state-icon-color, #44739e))));
       align-items: center;
       align-self: center;
       display: flex;
@@ -85,7 +85,7 @@ export const styles = html`
       flex-direction: column;
     }
     bar-card-backgroundbar {
-      background: var(--bar-color);
+      background: var(--bar-card-background-color, var(--bar-color));
       filter: brightness(0.5);
       opacity: 0.25;
     }

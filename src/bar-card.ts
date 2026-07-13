@@ -538,25 +538,51 @@ export class BarCard extends LitElement {
   private _computePercent(value: string, index: number): number {
     const config = this._configArray[index];
     const numberValue = Number(value);
+    const min = Number(config.min);
+    const max = Number(config.max);
 
     if (value == 'unavailable') return 0;
     if (isNaN(numberValue)) return 100;
+    // Guard against invalid min/max (e.g. NaN from a template or a non-numeric
+    // entity): an invalid --bar-percent breaks the CSS gradient for the bar.
+    if (isNaN(min) || isNaN(max) || max - min <= 0) return 0;
 
+    let percent;
     switch (config.direction) {
       case 'right-reverse':
       case 'left-reverse':
       case 'up-reverse':
       case 'down-reverse':
-        return 100 - (100 * (numberValue - config.min)) / (config.max - config.min);
+        percent = 100 - (100 * (numberValue - min)) / (max - min);
+        break;
       default:
-        return (100 * (numberValue - config.min)) / (config.max - config.min);
+        percent = (100 * (numberValue - min)) / (max - min);
     }
+    return Math.max(0, Math.min(100, percent));
   }
 
   private _handleAction(ev): void {
     if (this.hass && ev.target.config && ev.detail.action) {
-      handleAction(this, this.hass, ev.target.config, ev.detail.action);
+      handleAction(this, this.hass, this._normalizeActionConfig(ev.target.config), ev.detail.action);
     }
+  }
+
+  // HA 2024.8 renamed service calls to actions ('perform-action' with
+  // 'perform_action'); custom-card-helpers only knows 'call-service'.
+  private _normalizeActionConfig(config) {
+    const normalized = { ...config };
+    for (const key of ['tap_action', 'hold_action', 'double_tap_action']) {
+      const action = config[key];
+      if (action && action.action === 'perform-action') {
+        normalized[key] = {
+          ...action,
+          action: 'call-service',
+          service: action.perform_action,
+          data: action.data || action.service_data,
+        };
+      }
+    }
+    return normalized;
   }
 
   getCardSize(): number {
