@@ -177,6 +177,15 @@ export const styles = html`
       width: 16px;
       position: relative;
       text-align: center;
+      opacity: 0;
+    }
+    @keyframes bar-card-indicator-fade-a {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes bar-card-indicator-fade-b {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
     }
     .indicator-direction-right {
       margin-right: -16px;
@@ -184,6 +193,10 @@ export const styles = html`
     }
     .indicator-direction-up {
       margin: 4px;
+    }
+    bar-card-name,
+    bar-card-value {
+      line-height: 1;
     }
     bar-card-name {
       align-items: center;

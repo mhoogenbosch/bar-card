@@ -14,6 +14,31 @@ deze fork houdt de card alleen werkend op actuele Home Assistant-releases.
 
 ## Release notes
 
+### v3.5.0 (2026-07-13)
+
+**English**
+- New: `min` and `max` accept an entity id (or numeric string) in addition to a number — the bar range then
+  follows that entity's state (upstream #124, #163, #184, #141; adopted from the
+  [vogon1/bar-card](https://github.com/vogon1/bar-card) fork, hardened with the NaN guard from v3.3.0).
+- Fix: the `left`, `down` and all `-reverse` directions now actually render correctly — upstream documented
+  eight directions but only implemented the layout for `right` and `up`.
+- Fix: a configured `width` was silently overridden by the bar's `flex-grow: 1` (adopted from vogon1/bar-card).
+- Improved: the change indicator (▲/▼) now fades out after 2 seconds instead of lingering until the next
+  re-render (adopted from vogon1/bar-card).
+- Fix: name/value line height no longer overflows the bar on themes with larger fonts.
+
+**Nederlands**
+- Nieuw: `min` en `max` accepteren naast een getal ook een entity-id (of numerieke string) — het balkbereik
+  volgt dan de state van die entiteit (upstream #124, #163, #184, #141; overgenomen uit de
+  [vogon1/bar-card](https://github.com/vogon1/bar-card)-fork, gehard met de NaN-guard uit v3.3.0).
+- Fix: de richtingen `left`, `down` en alle `-reverse`-varianten renderen nu echt correct — upstream
+  documenteerde acht richtingen maar implementeerde de layout alleen voor `right` en `up`.
+- Fix: een geconfigureerde `width` werd stilletjes overschreven door `flex-grow: 1` van de balk (overgenomen
+  uit vogon1/bar-card).
+- Verbeterd: de verander-indicator (▲/▼) vervaagt nu na 2 seconden in plaats van te blijven staan tot de
+  volgende re-render (overgenomen uit vogon1/bar-card).
+- Fix: de regelhoogte van naam/waarde loopt niet meer uit de balk bij thema's met grotere fonts.
+
 ### v3.4.0 (2026-07-13)
 
 **English**
@@ -120,8 +145,8 @@ deze fork houdt de card alleen werkend op actuele Home Assistant-releases.
 | height | string | 40px | Defines the height of the bar.
 | icon | string | entity icon | Defines the icon to be displayed. Defaults to the entity's icon (attribute or registry), otherwise the domain icon.
 | limit_value | boolean | false | Limits value displayed to `min` and `max` value.
-| max | number | 100 | Defines maximum value of the bar.
-| min | number | 0 | Defines minimum value of the bar.
+| max | number or entity | 100 | Defines maximum value of the bar. Accepts a number or an entity id whose state supplies the value.
+| min | number or entity | 0 | Defines minimum value of the bar. Accepts a number or an entity id whose state supplies the value.
 | name | string | none | Defines custom entity name.
 | positions | object | none | Defines the positions of the card elements. See [Positions Options](#positions-options).
 | severity | object | none | A list of severity values. See [Severity Options](#severity-options).
@@ -344,6 +369,9 @@ type: 'custom:bar-card'
 ```
 
 ## Credits
+
+Several v3.5.0 improvements (min/max as entity, direction and width fixes, indicator fade) were adopted from
+the [vogon1/bar-card](https://github.com/vogon1/bar-card) fork.
 
 Inspired by [Big Number Card](https://github.com/ciotlosm/custom-lovelace/tree/master/bignumber-card) by [ciotlosm](https://github.com/ciotlosm).
 

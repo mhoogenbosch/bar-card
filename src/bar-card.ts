@@ -14,7 +14,7 @@ import { BarCardConfig } from './types';
 import { actionHandler } from './action-handler-directive';
 import { CARD_VERSION } from './const';
 import { localize } from './localize/localize';
-import { mergeDeep, hasConfigOrEntitiesChanged, createConfigArray } from './helpers';
+import { mergeDeep, hasConfigOrEntitiesChanged, createConfigArray, resolveMinMax } from './helpers';
 import { styles } from './styles';
 
 /* eslint no-console: 0 */
@@ -40,6 +40,7 @@ export class BarCard extends LitElement {
   @property() private _configArray: BarCardConfig[] = [];
   private _stateArray: any[] = [];
   private _animationState: any[] = [];
+  private _indicatorToggle: boolean[] = [];
   private _rowAmount = 1;
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
@@ -93,7 +94,7 @@ export class BarCard extends LitElement {
         <div
           id="states"
           class="card-content"
-          style="${this._config.entity_row ? 'padding: 0px;' : ''} ${this._config.direction == 'up'
+          style="${this._config.entity_row ? 'padding: 0px;' : ''} ${['up', 'up-reverse', 'down', 'down-reverse'].includes(this._config.direction)
             ? ''
             : 'flex-grow: 0;'}"
         >
@@ -149,10 +150,14 @@ export class BarCard extends LitElement {
           }
         }
 
+        // Resolve min/max: numbers, numeric strings, or entity ids.
+        const min = resolveMinMax(this.hass, config.min);
+        const max = resolveMinMax(this.hass, config.max);
+
         // If limit_value is defined limit the displayed value to min and max.
-        if (config.limit_value) {
-          entityState = Math.min(entityState, config.max);
-          entityState = Math.max(entityState, config.min);
+        if (config.limit_value && !isNaN(min) && !isNaN(max)) {
+          entityState = Math.min(entityState, max);
+          entityState = Math.max(entityState, min);
         }
 
         // If decimal is defined check if NaN and apply number fix.
@@ -173,7 +178,10 @@ export class BarCard extends LitElement {
         let barHeight: string | number = 40;
         if (config.height) barHeight = config.height;
 
-        // Set style variables based on direction.
+        // Set style variables based on direction. The '-reverse' variants keep
+        // their base axis's layout; only the fill percentage is inverted (in
+        // _computePercent). Upstream only implemented 'right' and 'up' here.
+        const isVertical = ['up', 'up-reverse', 'down', 'down-reverse'].includes(config.direction);
         let alignItems = 'stretch';
         let backgroundMargin = '0px 0px 0px 13px';
         let barDirection = 'right';
@@ -183,14 +191,29 @@ export class BarCard extends LitElement {
 
         switch (config.direction) {
           case 'right':
+          case 'right-reverse':
             barDirection = 'right';
             markerDirection = 'left';
             break;
+          case 'left':
+          case 'left-reverse':
+            barDirection = 'left';
+            markerDirection = 'right';
+            break;
           case 'up':
+          case 'up-reverse':
             backgroundMargin = '0px';
             barDirection = 'top';
             flexDirection = 'column-reverse';
             markerDirection = 'bottom';
+            markerStyle = 'height: 2px; width: 100%;';
+            break;
+          case 'down':
+          case 'down-reverse':
+            backgroundMargin = '0px';
+            barDirection = 'bottom';
+            flexDirection = 'column';
+            markerDirection = 'top';
             markerStyle = 'height: 2px; width: 100%;';
             break;
         }
@@ -243,7 +266,7 @@ export class BarCard extends LitElement {
             nameOutside = html`
               <bar-card-name
                 class="${config.entity_row ? 'name-outside' : ''}"
-                style="${config.direction == 'up' ? '' : config.width ? `width: calc(100% - ${config.width});` : ''}"
+                style="${isVertical ? '' : config.width ? `width: calc(100% - ${config.width});` : ''}"
                 >${name}</bar-card-name
               >
             `;
@@ -276,18 +299,18 @@ export class BarCard extends LitElement {
         switch (config.positions.minmax) {
           case 'outside':
             minMaxOutside = html`
-              <bar-card-min>${config.min}${unitOfMeasurement}</bar-card-min>
+              <bar-card-min>${min}${unitOfMeasurement}</bar-card-min>
               <bar-card-divider>/</bar-card-divider>
-              <bar-card-max>${config.max}${unitOfMeasurement}</bar-card-max>
+              <bar-card-max>${max}${unitOfMeasurement}</bar-card-max>
             `;
             break;
           case 'inside':
             minMaxInside = html`
-              <bar-card-min class="${config.direction == 'up' ? 'min-direction-up' : 'min-direction-right'}"
-                >${config.min}${unitOfMeasurement}</bar-card-min
+              <bar-card-min class="${isVertical ? 'min-direction-up' : 'min-direction-right'}"
+                >${min}${unitOfMeasurement}</bar-card-min
               >
               <bar-card-divider>/</bar-card-divider>
-              <bar-card-max> ${config.max}${unitOfMeasurement}</bar-card-max>
+              <bar-card-max> ${max}${unitOfMeasurement}</bar-card-max>
             `;
             break;
           case 'off':
@@ -300,8 +323,8 @@ export class BarCard extends LitElement {
         switch (config.positions.value) {
           case 'outside':
             valueOutside = html`
-              <bar-card-value class="${config.direction == 'up' ? 'value-direction-up' : 'value-direction-right'}"
-                >${config.complementary ? config.max - entityState : entityState} ${unitOfMeasurement}</bar-card-value
+              <bar-card-value class="${isVertical ? 'value-direction-up' : 'value-direction-right'}"
+                >${config.complementary ? max - entityState : entityState} ${unitOfMeasurement}</bar-card-value
               >
             `;
             break;
@@ -310,10 +333,10 @@ export class BarCard extends LitElement {
               <bar-card-value
                 class="${config.positions.minmax == 'inside'
                   ? ''
-                  : config.direction == 'up'
+                  : isVertical
                   ? 'value-direction-up'
                   : 'value-direction-right'}"
-                >${config.complementary ? config.max - entityState : entityState} ${unitOfMeasurement}</bar-card-value
+                >${config.complementary ? max - entityState : entityState} ${unitOfMeasurement}</bar-card-value
               >
             `;
             break;
@@ -350,6 +373,12 @@ export class BarCard extends LitElement {
         // Set bar color.
         const barColor = this._computeBarColor(entityState, index);
 
+        // Fade the change indicator out after 2s; alternate between two
+        // identical keyframe names so a new change restarts the animation
+        // (adopted from vogon1/bar-card).
+        const fadeName = this._indicatorToggle[index] ? 'bar-card-indicator-fade-a' : 'bar-card-indicator-fade-b';
+        const indicatorFadeStyle = indicatorText ? `opacity: 1; animation: ${fadeName} 2s forwards;` : '';
+
         // Set indicator html based on position.
         let indicatorOutside;
         let indicatorInside;
@@ -357,15 +386,15 @@ export class BarCard extends LitElement {
           case 'outside':
             indicatorOutside = html`
               <bar-card-indicator
-                class="${config.direction == 'up' ? '' : 'indicator-direction-right'}"
-                style="--bar-color: ${barColor};"
+                class="${isVertical ? '' : 'indicator-direction-right'}"
+                style="--bar-color: ${barColor}; ${indicatorFadeStyle}"
                 >${indicatorText}</bar-card-indicator
               >
             `;
             break;
           case 'inside':
             indicatorInside = html`
-              <bar-card-indicator style="--bar-color: ${barColor};">${indicatorText}</bar-card-indicator>
+              <bar-card-indicator style="--bar-color: ${barColor}; ${indicatorFadeStyle}">${indicatorText}</bar-card-indicator>
             `;
             break;
           case 'off':
@@ -373,10 +402,10 @@ export class BarCard extends LitElement {
         }
 
         // Set bar percent and marker percent based on value difference.
-        const barPercent = this._computePercent(entityState, index);
-        const targetMarkerPercent = this._computePercent(config.target, index);
+        const barPercent = this._computePercent(entityState, index, min, max);
+        const targetMarkerPercent = this._computePercent(config.target, index, min, max);
         let targetStartPercent = barPercent;
-        let targetEndPercent = this._computePercent(config.target, index);
+        let targetEndPercent = this._computePercent(config.target, index, min, max);
         if (targetEndPercent < targetStartPercent) {
           targetStartPercent = targetEndPercent;
           targetEndPercent = barPercent;
@@ -386,7 +415,7 @@ export class BarCard extends LitElement {
         let barWidth = '';
         if (config.width) {
           alignItems = 'center';
-          barWidth = `width: ${config.width}`;
+          barWidth = `width: ${config.width}; flex-grow: 0;`;
         }
 
         // Set animation state inside array.
@@ -441,7 +470,7 @@ export class BarCard extends LitElement {
                   `
                 : ''}
               <bar-card-contentbar
-                class="${config.direction == 'up' ? 'contentbar-direction-up' : 'contentbar-direction-right'}"
+                class="${isVertical ? 'contentbar-direction-up' : 'contentbar-direction-right'}"
               >
                 ${iconInside} ${indicatorInside} ${nameInside} ${minMaxInside} ${valueInside}
               </bar-card-contentbar>
@@ -454,6 +483,9 @@ export class BarCard extends LitElement {
         if (entityState !== this._stateArray[index]) {
           this._stateArray[index] = entityState;
         }
+
+        // Alternate the fade keyframe name for the next render.
+        this._indicatorToggle[index] = !this._indicatorToggle[index];
       }
 
       // Add all bars for this row to array.
@@ -556,17 +588,17 @@ export class BarCard extends LitElement {
     return icon;
   }
 
-  private _computePercent(value: string, index: number): number {
+  private _computePercent(value: string, index: number, min: number, max: number): number {
     const config = this._configArray[index];
     const numberValue = Number(value);
-    const min = Number(config.min);
-    const max = Number(config.max);
 
     if (value == 'unavailable') return 0;
     if (isNaN(numberValue)) return 100;
     // Guard against invalid min/max (e.g. NaN from a template or a non-numeric
     // entity): an invalid --bar-percent breaks the CSS gradient for the bar.
-    if (isNaN(min) || isNaN(max) || max - min <= 0) return 0;
+    if (isNaN(min) || isNaN(max)) return 0;
+    if (max === min) return numberValue >= max ? 100 : 0;
+    if (max < min) return 0;
 
     let percent;
     switch (config.direction) {

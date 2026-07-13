@@ -1,7 +1,6 @@
 import { ActionConfig } from 'custom-card-helpers';
 
 export interface BarCardConfig {
-  entity_config: boolean;
   animation: any;
   attribute: any;
   color: string;
@@ -17,8 +16,8 @@ export interface BarCardConfig {
   hold_action?: ActionConfig;
   icon: any;
   limit_value: boolean;
-  max: number;
-  min: number;
+  max: number | string;
+  min: number | string;
   name: string;
   positions: any;
   severity: any;

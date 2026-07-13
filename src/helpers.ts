@@ -31,6 +31,20 @@ export function mergeDeep(...objects: any): any {
   }, {});
 }
 
+/**
+ * Resolve a min/max config value: a number, a numeric string, or an entity id
+ * whose state supplies the value. Returns NaN when it cannot be resolved so
+ * callers can guard explicitly (adopted from vogon1/bar-card, hardened).
+ */
+export function resolveMinMax(hass: HomeAssistant | undefined, value: number | string | undefined): number {
+  if (typeof value === 'number') return value;
+  if (value === undefined || value === null) return NaN;
+  const direct = Number(value);
+  if (!isNaN(direct)) return direct;
+  if (hass && hass.states[value]) return Number(hass.states[value].state);
+  return NaN;
+}
+
 export function mapRange(num: number, in_min: number, in_max: number, out_min: number, out_max: number): number {
   return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 }
