@@ -43,6 +43,7 @@ export const styles = html`
       flex-basis: 100%;
       flex-direction: row;
       margin-right: 8px;
+      min-width: 0;
     }
     bar-card-card:last-child {
       margin-right: 0px;
@@ -51,6 +52,8 @@ export const styles = html`
       cursor: pointer;
       flex-grow: 1;
       position: relative;
+      border-radius: var(--bar-card-border-radius, var(--ha-card-border-radius, 4px));
+      overflow: hidden;
     }
     bar-card-iconbar {
       color: var(--bar-card-icon-color, var(--icon-color, var(--paper-item-icon-color, var(--state-icon-color, #44739e))));

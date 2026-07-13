@@ -73,7 +73,9 @@ export class BarCard extends LitElement {
       config,
     );
 
-    if (this._config.stack == 'horizontal') this._config.columns = this._config.entities.length;
+    if (this._config.stack == 'horizontal' && this._config.entities) {
+      this._config.columns = this._config.entities.length;
+    }
     this._configArray = createConfigArray(this._config);
     this._rowAmount = this._configArray.length / this._config.columns;
   }
@@ -86,7 +88,7 @@ export class BarCard extends LitElement {
     return html`
       <ha-card
         .header=${this._config.title ? this._config.title : null}
-        style="${this._config.entity_row ? 'background: #0000; box-shadow: none;' : ''}"
+        style="${this._config.entity_row ? 'background: #0000; box-shadow: none; border: none;' : ''}"
       >
         <div
           id="states"
@@ -203,6 +205,9 @@ export class BarCard extends LitElement {
           icon = config.icon;
         } else if (state.attributes.icon) {
           icon = state.attributes.icon;
+        } else if ((this.hass as any).entities?.[config.entity]?.icon) {
+          // Registry-assigned icons are not exposed via state attributes.
+          icon = (this.hass as any).entities[config.entity].icon;
         } else {
           icon = domainIcon(computeDomain(config.entity), entityState);
         }
@@ -318,12 +323,20 @@ export class BarCard extends LitElement {
         }
 
         // Set indicator and animation state based on value change.
+        // Compare numerically when possible: string comparison misorders
+        // negative values and numbers of different length ('9' > '10').
+        let previousState = this._stateArray[index];
+        let comparisonState = entityState;
+        if (!isNaN(Number(entityState)) && !isNaN(Number(previousState))) {
+          comparisonState = Number(entityState);
+          previousState = Number(previousState);
+        }
         let indicatorText = '';
-        if (entityState > this._stateArray[index]) {
+        if (comparisonState > previousState) {
           indicatorText = '▲';
           if (config.direction == 'up') this._animationState[index] = 'animation-increase-vertical';
           else this._animationState[index] = 'animation-increase';
-        } else if (entityState < this._stateArray[index]) {
+        } else if (comparisonState < previousState) {
           indicatorText = '▼';
           if (config.direction == 'up') this._animationState[index] = 'animation-decrease-vertical';
           else this._animationState[index] = 'animation-decrease';

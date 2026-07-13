@@ -14,6 +14,42 @@ deze fork houdt de card alleen werkend op actuele Home Assistant-releases.
 
 ## Release notes
 
+### v3.4.0 (2026-07-13)
+
+**English**
+- Fix: the visual (GUI) editor was rebuilt on Home Assistant's native `ha-form`. The old editor was built on
+  `paper-*` elements that no longer exist in the HA frontend, rendering a broken UI and freezing the browser
+  when toggling options (upstream #175, #186, #190). It also no longer modifies your config just by opening it.
+- Fix: no more double border around the card when used with `entity_row: true` inside an entities card
+  (HA 2022.11+ card border) (upstream #152).
+- Fix: the up/down change indicator now compares values numerically — it misfired on negative values and on
+  numbers of different lengths (string comparison: '9' > '10') (upstream #181).
+- Fix: entity icons assigned via the entity registry (settings UI) are now used; the card no longer falls back
+  to the generic domain icon (upstream #104).
+- Fix: bars in a horizontal stack now get equal widths regardless of name length (upstream #76).
+- Fix: rounded corners now actually work — the bar container clips its layers and honors
+  `--bar-card-border-radius` (upstream #203, #156).
+- Docs: options table corrected (`stack` documented, all `direction` values listed, wrong CSS variable name
+  fixed, unimplemented `entity_config` removed) and installation instructions updated for this fork.
+
+**Nederlands**
+- Fix: de visuele (GUI) editor is herbouwd op Home Assistants eigen `ha-form`. De oude editor gebruikte
+  `paper-*`-elementen die niet meer bestaan in de HA-frontend, waardoor de UI kapot was en de browser bevroor
+  bij het omzetten van opties (upstream #175, #186, #190). De editor wijzigt je config ook niet meer door hem
+  alleen maar te openen.
+- Fix: geen dubbele rand meer om de card bij `entity_row: true` in een entities-card (HA 2022.11+ card-border)
+  (upstream #152).
+- Fix: de op/neer-indicator vergelijkt waarden nu numeriek — ging fout bij negatieve waarden en getallen van
+  verschillende lengte (stringvergelijking: '9' > '10') (upstream #181).
+- Fix: entiteit-iconen die via het register (instellingen-UI) zijn toegewezen worden nu gebruikt; de card valt
+  niet meer terug op het generieke domein-icoon (upstream #104).
+- Fix: balken in een horizontale stack krijgen nu gelijke breedtes, ongeacht de naamlengte (upstream #76).
+- Fix: afgeronde hoeken werken nu echt — de balk-container knipt zijn lagen af en respecteert
+  `--bar-card-border-radius` (upstream #203, #156).
+- Docs: options-tabel gecorrigeerd (`stack` gedocumenteerd, alle `direction`-waardes vermeld, verkeerde
+  CSS-variabelenaam gefixt, niet-geïmplementeerd `entity_config` verwijderd) en installatie-instructies
+  bijgewerkt voor deze fork.
+
 ### v3.3.1 (2026-07-13)
 
 **English**
@@ -74,22 +110,22 @@ deze fork houdt de card alleen werkend op actuele Home Assistant-releases.
 | entity | string | **Required** | Entity State
 | animation | object | none | Defines animation options. See [Animation Options](#animation-options).
 | attribute | string | none | Displays a specific attribute instead of state value.
-| color | string | var(--custom-bar-card-color, var(--primary-color)) | Color of the bar.
+| color | string | var(--bar-card-color, var(--primary-color)) | Color of the bar.
 | columns | number | none | Defines the amount of bars to be displayed on a single row when multiple entities are defined.
 | complementary | boolean | false | Displays complementary value (max - state_value) instead state value.
-| decimal | number | none | The amount of decimals to be displayed for the value.
-| direction | string | right | Direction of the bar. `right`, `up`
+| decimal | number | entity display precision | The amount of decimals to be displayed for the value. When unset, the entity's display precision from the HA entity registry is used.
+| direction | string | right | Direction of the bar. `right`, `left`, `up`, `down`, `right-reverse`, `left-reverse`, `up-reverse`, `down-reverse`
 | entities | array | none | A list of entities. Accepts individual config options per defined entity.
-| entity_config | boolean | false | Sets the card to use the configured entity attributes as the card config.
 | entity_row | boolean | false | Removes the background card for use inside entities card.
 | height | string | 40px | Defines the height of the bar.
-| icon | string | icon | Defines the icon to be displayed.
+| icon | string | entity icon | Defines the icon to be displayed. Defaults to the entity's icon (attribute or registry), otherwise the domain icon.
 | limit_value | boolean | false | Limits value displayed to `min` and `max` value.
 | max | number | 100 | Defines maximum value of the bar.
 | min | number | 0 | Defines minimum value of the bar.
 | name | string | none | Defines custom entity name.
 | positions | object | none | Defines the positions of the card elements. See [Positions Options](#positions-options).
 | severity | object | none | A list of severity values. See [Severity Options](#severity-options).
+| stack | string | vertical | Stacks multiple entities `vertical` or `horizontal`.
 | tap_action | object | none | See [home assistant documentation](https://www.home-assistant.io/lovelace/actions/).
 | target | number | none | Defines and enables target marker value.
 | title | string | none | Adds title header to the card.
@@ -130,6 +166,8 @@ deze fork houdt de card alleen werkend op actuele Home Assistant-releases.
 | bar-card-color | Defines the default bar color.
 | bar-card-border-radius | Defines the default border radius of the bar.
 | bar-card-disabled-color | Defines the bar color when state is `unavailable`.
+| bar-card-background-color | Defines the background bar color (defaults to a dimmed bar color).
+| bar-card-icon-color | Defines the icon color.
 
 ## CSS Elements
 
@@ -157,9 +195,16 @@ See [example](#200-default-layout-requires-card-mod). (**requires** [card-mod](h
 
 ## Installation
 
-Prefered method of installation is [Home Assistant Community Store](https://github.com/hacs/integration).
+Install via [HACS](https://hacs.xyz/) as a **custom repository** (this fork is not in the HACS default store;
+the default store entry points to the unmaintained upstream):
 
-It's **required** to load this card as `module`.
+1. HACS → three-dots menu → *Custom repositories*
+2. Repository: `mhoogenbosch/bar-card`, type: *Dashboard*
+3. Install **Bar Card** — if you had the upstream `custom-cards/bar-card` installed, uninstall that one first
+   (both use the same `/hacsfiles/bar-card/` path).
+
+HACS registers the dashboard resource automatically. When adding the resource manually it's **required** to
+load this card as `module`:
 
 ```yaml
 - url: /hacsfiles/bar-card/bar-card.js
@@ -266,7 +311,7 @@ positions:
   icon: 'off'
   indicator: 'off'
   minmax: inside
-  title: inside
+  name: inside
   value: inside
 style: |-
   .contentbar-direction-right {
