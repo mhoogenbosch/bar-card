@@ -14,6 +14,35 @@ deze fork houdt de card alleen werkend op actuele Home Assistant-releases.
 
 ## Release notes
 
+### v3.6.0 (2026-07-19)
+
+**English**
+- Fix: the visual editor could wipe a multi-entity card's `entities` list (and other options the form does not
+  show, such as `severity` and `tap_action`) when you edited a single field — the editor now always preserves
+  keys it does not render.
+- Fix: the `up-reverse` and `down-reverse` directions animated horizontally instead of vertically when
+  `animation` was on.
+- Fix: the change-indicator fade no longer restarts on unrelated re-renders (theme or parent updates); it now
+  flips its keyframe only on a real value change, so two successive changes reliably restart the animation.
+- Fix: a per-entity `severity` (or any per-entity list) now **overrides** the global one instead of being
+  concatenated onto it.
+- Cleanup: removed dead helpers left over from the old drag-and-drop editor (`mapRange`, `arrayMove`,
+  `createEditorConfigArray`).
+
+**Nederlands**
+- Fix: de visuele editor kon de `entities`-lijst van een multi-entity-kaart wissen (en andere opties die het
+  formulier niet toont, zoals `severity` en `tap_action`) bij het bewerken van één veld — de editor behoudt nu
+  altijd de sleutels die hij niet zelf toont.
+- Fix: de richtingen `up-reverse` en `down-reverse` animeerden horizontaal in plaats van verticaal wanneer
+  `animation` aanstond.
+- Fix: de fade van de verander-indicator herstart niet meer bij ongerelateerde re-renders (thema- of
+  parent-updates); hij wisselt zijn keyframe nu alleen bij een echte waardeverandering, zodat twee opeenvolgende
+  wijzigingen de animatie betrouwbaar herstarten.
+- Fix: een per-entity `severity` (of elke per-entity lijst) **overschrijft** nu de globale in plaats van eraan
+  te worden vastgeplakt.
+- Opschoning: dode helpers uit de oude drag-and-drop-editor verwijderd (`mapRange`, `arrayMove`,
+  `createEditorConfigArray`).
+
 ### v3.5.0 (2026-07-13)
 
 **English**

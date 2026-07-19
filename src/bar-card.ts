@@ -357,14 +357,10 @@ export class BarCard extends LitElement {
         let indicatorText = '';
         if (comparisonState > previousState) {
           indicatorText = '▲';
-          if (config.direction == 'up') this._animationState[index] = 'animation-increase-vertical';
-          else this._animationState[index] = 'animation-increase';
+          this._animationState[index] = isVertical ? 'animation-increase-vertical' : 'animation-increase';
         } else if (comparisonState < previousState) {
           indicatorText = '▼';
-          if (config.direction == 'up') this._animationState[index] = 'animation-decrease-vertical';
-          else this._animationState[index] = 'animation-decrease';
-        } else {
-          this._animationState[index] = this._animationState[index];
+          this._animationState[index] = isVertical ? 'animation-decrease-vertical' : 'animation-decrease';
         }
         if (isNaN(Number(entityState))) {
           indicatorText = '';
@@ -484,8 +480,13 @@ export class BarCard extends LitElement {
           this._stateArray[index] = entityState;
         }
 
-        // Alternate the fade keyframe name for the next render.
-        this._indicatorToggle[index] = !this._indicatorToggle[index];
+        // Alternate the fade keyframe name ONLY on a real change (indicatorText
+        // set). Toggling on every render — including th/parent re-renders with no
+        // value change — restarts the fade spuriously and can hand two successive
+        // changes the same keyframe name, so the browser wouldn't restart it.
+        if (indicatorText) {
+          this._indicatorToggle[index] = !this._indicatorToggle[index];
+        }
       }
 
       // Add all bars for this row to array.
