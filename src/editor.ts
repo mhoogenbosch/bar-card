@@ -153,8 +153,10 @@ export class BarCardEditor extends LitElement implements LovelaceCardEditor {
       ></ha-form>
       <p class="note">
         ${multiEntity
-          ? html`This card uses an <code>entities</code> list; edit the entities and their per-entity options in the
-              YAML editor.`
+          ? html`
+              This card uses an <code>entities</code> list; edit the entities and their per-entity options in the YAML
+              editor.
+            `
           : ''}
         Options such as <code>severity</code>, <code>tap_action</code> and per-entity overrides are configured in the
         YAML editor.
@@ -171,7 +173,11 @@ export class BarCardEditor extends LitElement implements LovelaceCardEditor {
     if (!this._config || !this.hass) {
       return;
     }
-    const value = { ...ev.detail.value };
+    // Start from the existing config so keys the form does not render (entities,
+    // severity, tap/hold/double_tap_action, attribute, per-entity overrides) are
+    // never dropped when the visual editor emits a change — otherwise editing a
+    // single field could wipe a multi-entity card's `entities` list.
+    const value = { ...this._config, ...ev.detail.value };
 
     // Drop empty values so the stored YAML stays clean.
     for (const key of Object.keys(value)) {

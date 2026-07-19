@@ -45,8 +45,21 @@ export function resolveMinMax(hass: HomeAssistant | undefined, value: number | s
   return NaN;
 }
 
-export function mapRange(num: number, in_min: number, in_max: number, out_min: number, out_max: number): number {
-  return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+/**
+ * Merge a per-entity override onto the shared config. Unlike mergeDeep, arrays
+ * (e.g. `severity`) from the override REPLACE the base array instead of being
+ * concatenated onto it — a per-entity severity list should override the global
+ * one, not stack on top of it.
+ */
+export function mergeEntityConfig(base: any, override: any): any {
+  const isPlainObject = (o: any) => o && typeof o === 'object' && !Array.isArray(o);
+  const out: any = { ...base };
+  for (const key of Object.keys(override)) {
+    const bVal = out[key];
+    const oVal = override[key];
+    out[key] = isPlainObject(bVal) && isPlainObject(oVal) ? mergeEntityConfig(bVal, oVal) : oVal;
+  }
+  return out;
 }
 
 // Check if config or Entity changed
@@ -74,46 +87,16 @@ export function createConfigArray(config): BarCardConfig[] {
   const configArray: BarCardConfig[] = [];
   if (config.entities) {
     for (const entityConfig of config.entities) {
+      const clonedObject = mergeDeep({}, config);
+      delete clonedObject.entities;
       if (typeof entityConfig == 'string') {
-        const clonedObject = mergeDeep({}, config);
-        delete clonedObject.entities;
-        const stringConfig = mergeDeep(clonedObject, { entity: entityConfig });
-        configArray.push(stringConfig);
+        configArray.push(mergeEntityConfig(clonedObject, { entity: entityConfig }));
       } else if (typeof entityConfig == 'object') {
-        const clonedObject = mergeDeep({}, config);
-        delete clonedObject.entities;
-        const objectConfig = mergeDeep(clonedObject, entityConfig);
-        configArray.push(objectConfig);
+        configArray.push(mergeEntityConfig(clonedObject, entityConfig));
       }
     }
   } else {
     configArray.push(config);
   }
   return configArray;
-}
-
-export function createEditorConfigArray(config): BarCardConfig[] {
-  const configArray: BarCardConfig[] = [];
-  if (config.entities) {
-    for (const entityConfig of config.entities) {
-      if (typeof entityConfig == 'string') {
-        const stringConfig = mergeDeep({}, { entity: entityConfig });
-        configArray.push(stringConfig);
-      } else if (typeof entityConfig == 'object') {
-        const objectConfig = mergeDeep({}, entityConfig);
-        configArray.push(objectConfig);
-      }
-    }
-  } else {
-    configArray.push(config);
-  }
-  return configArray;
-}
-
-export function arrayMove(arr, fromIndex, toIndex): any[] {
-  const element = arr[fromIndex];
-  const newArray = arr.slice();
-  newArray.splice(fromIndex, 1);
-  newArray.splice(toIndex, 0, element);
-  return newArray;
 }
